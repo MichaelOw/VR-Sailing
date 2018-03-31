@@ -1,0 +1,298 @@
+<!doctype html>
+<html>
+    <head>
+        <title>Sailing Sequence</title>
+        <script src="https://aframe.io/releases/0.7.0/aframe.min.js"></script>
+        <script>
+            AFRAME.registerComponent('retry', {
+                init: function () {
+                    this.el.addEventListener('click', function (evt) {
+                        console.log('retry');
+
+                        var user_ship = document.getElementById('user_ship');
+                        setTimeout(function() {
+                            user_ship.setAttribute('position', '0 0 0')
+                        }, 2000);
+
+                        setTimeout(function() {
+                            user_ship.emit('travel_finding')
+                        }, 2000);
+
+                        var blackout = document.getElementById('blackout');
+                        blackout.emit('activate')
+                        blackout.setAttribute('position', '0 9.6 0')
+                        setTimeout(function() {
+                            blackout.setAttribute('position', '0 -1000 0')
+                        }, 4000);
+
+                        var camera = document.getElementById('camera');
+                        setTimeout(function() {
+                            camera.setAttribute('rotation', '0 0 0')
+                        }, 2000);
+                    });
+                }
+            });
+
+            AFRAME.registerComponent('spotted', {
+                init: function () {
+                    this.el.addEventListener('click', function (evt) {
+                        console.log('spotted');
+
+                        var user_ship = document.getElementById('user_ship');
+                        user_ship.setAttribute('position', '0 0 0')
+                        user_ship.emit('rotate_ship')
+                        setTimeout(function() {
+                            user_ship.emit('travel_finding2')
+                            user_ship.setAttribute('rotation', '0 0 0')
+                        }, 2100);
+
+                        var camera = document.getElementById('camera');
+                        setTimeout(function() {
+                            camera.setAttribute('rotation', '0 0 0')
+                        }, 2000);
+
+                        var blackout = document.getElementById('blackout');
+                        blackout.emit('activate')
+                        blackout.setAttribute('position', '0 9.6 0')
+                        setTimeout(function() {
+                            blackout.setAttribute('position', '0 -1000 0')
+                        }, 4000);
+
+                        setTimeout(function() {
+                            blackout.setAttribute('position', '0 9.6 0')
+                            blackout.emit('activate')
+                        }, 15000);
+
+                        var america = document.getElementById('america');
+                        setTimeout(function() {
+                            america.setAttribute('position', '0 0 -570' )
+                            america.setAttribute('rotation', '0 0 0' )
+                        }, 2000);
+
+                        var america_box = document.getElementById('america_box');
+                        america_box.setAttribute('position', '0 -1000 0' )
+
+                        var welcome_message = document.getElementById('welcome_message');
+                        setTimeout(function() {
+                            welcome_message.setAttribute('position', "0 60 -10" )
+                        }, 13000);
+
+
+
+                        var retry_set = document.getElementById('retry_set');
+                        retry_set.setAttribute('position', '0 -1000 0' )
+
+                        var sea = document.getElementById('sea');
+                        sea.setAttribute('rotation', '-90 135 0' )
+
+
+                    });
+                }
+            });
+        </script>
+    </head>
+
+    <body>
+        <a-scene>
+            <!-- Asset Management System -->
+            <a-assets>
+                <img id="floor" src="img/floor.png">
+                <img id="floor-NRM" src="img/floor-NRM.png">
+                <img id="clear-sunny-sky" src="img/clear-sunny-sky.jpg">
+
+                <a-asset-item id="ship-o" src="3d/ship/model.obj"></a-asset-item>
+                <a-asset-item id="ship-m" src="3d/ship/materials.mtl"></a-asset-item>
+                <a-asset-item id="island1-o" src="3d/island1/Tropical%20Islands.obj"></a-asset-item>
+                <a-asset-item id="island1-m" src="3d/island1/Tropical%20Islands.mtl"></a-asset-item>
+                <a-asset-item id="island2-o" src="3d/island2/Bay_1250.obj"></a-asset-item>
+                <a-asset-item id="island2-m" src="3d/island2/Bay_1250.mtl"></a-asset-item>
+
+            </a-assets>
+
+            <!-- America 1 -->
+            <a-entity id="america"
+                      position="-10000 -1000 -10000"
+                      scale="1 1 1"
+                      rotation="0 90 0">
+
+                <!-- Island1 -->
+                <a-entity obj-model="obj: #island2-o; mtl: #island2-m" position="-50 0 0" scale="1 1 1" rotation="0 0 0"></a-entity>
+                <!-- Island2 -->
+                <a-entity obj-model="obj: #island2-o; mtl: #island2-m" position="0 0 0" scale="1 1 1" rotation="0 180 0"></a-entity>
+                <!-- Island3 -->
+                <a-entity obj-model="obj: #island2-o; mtl: #island2-m" position="70 0 0" scale="1 1 1" rotation="0 0 0"></a-entity>
+
+                <a-animation attribute="position"
+                             from="-10000 0 -800"
+                             to="-1000 0 -700"
+                             dur="14000"
+                             easing="linear"
+                             begin="5000">
+                </a-animation> 
+
+                <a-box id="america_box"
+                       class="clickable"
+                       color="#000000"
+                       scale="100 100 100"
+                       opacity="0"
+                       spotted>
+                </a-box>
+
+                <a-entity id="welcome_message"
+                          text="value: Welcome to America!;
+                                color: #000000; width: 200;
+                                align: center"
+                          position="0 0 0">
+                </a-entity>
+            </a-entity>
+
+            <!-- Retry Box -->
+            <a-entity id="retry_set"
+                      position="0 10.1 -1001"
+                      scale=".1 .1 .1">
+
+                <a-entity text="value: Retry?;
+                                color: #666666;
+                                width: 10;
+                                align: center">
+                </a-entity>
+
+                <a-box id="retry"
+                       class="clickable"
+                       position="0 -1 0"
+                       color = "#666666"
+                       retry>
+                </a-box>
+
+            </a-entity>
+
+            <!-- Sky -->
+            <a-sky src="#clear-sunny-sky"
+                   rotation="0 65 0">
+            </a-sky>
+
+
+            <!-- User + Ship -->
+            <a-entity id="user_ship" position="0 0 0">
+
+                <!-- User -->
+                <a-entity id="user"
+                          position="0 8 0"
+                          rotation="0 0 0">
+                    <a-camera id="camera">
+                        <a-entity cursor="fuse: true; fuseTimeout: 1500"
+                                  position="0 0 -1"
+                                  geometry="primitive: sphere; radius: 0.01"
+                                  material="color: #ffffff; shader: flat; opacity: 0.5"
+                                  raycaster="objects: .clickable">
+                            <a-animation attribute="scale"
+                                         to="3 3 3"
+                                         dur="1500"
+                                         begin="cursor-fusing"
+                                         fill="backwards"
+                                         easing="linear">
+                            </a-animation>
+                        </a-entity>
+                    </a-camera>
+                </a-entity>
+
+                <!-- Ship -->
+                <a-entity obj-model="obj: #ship-o; mtl: #ship-m"
+                          position="-2 11 10"
+                          rotation="0 140 0"
+                          scale="30 30 30">
+                </a-entity>            
+
+                <a-animation id="travel_start"
+                             attribute="position"
+                             from="0 0 0"
+                             to="0 0 -1000"
+                             dur="30000"
+                             easing="linear"
+                             begin="">
+                </a-animation>
+                
+                <a-animation attribute="rotation"
+                             from="0 0 0"
+                             to="0 22 0"
+                             dur="2000"
+                             easing="linear"
+                             begin="rotate_ship">
+                </a-animation>
+
+                <a-animation attribute="position"
+                             from="0 0 0"
+                             to="0 0 -1000"
+                             dur="30000"
+                             easing="linear"
+                             begin="travel_finding">
+                </a-animation>
+
+                <a-animation attribute="position"
+                             from="0 0 0"
+                             to="0 0 -500"
+                             dur="12000"
+                             easing="linear"
+                             begin="travel_finding2">
+                </a-animation>
+
+                <!-- Blackout -->
+                <a-sphere id="blackout"
+                          color="#000000"
+                          position="0 -100 0"
+                          scale=".5 .5 .5"
+                          opacity="0"
+                          side="double">
+                    <a-animation attribute="opacity"
+                                 from="0"
+                                 to="1"
+                                 direction="alternate"
+                                 repeat="1"
+                                 dur="2000"
+                                 easing="linear"
+                                 begin="activate">
+                    </a-animation> 
+                </a-sphere>   
+
+                <a-entity text="value: Look around and try to find America.\n(Somewhere on your left!)\n<----; color: #000000; width: 2; align: center"
+                          position="0 -100 -1"
+                          scale="1 1 1">
+                    <a-animation attribute="position"
+                                 from="0 -100 -1"
+                                 to="0 10 -1"
+                                 dur="1"
+                                 easing="linear"
+                                 begin="17000">
+                    </a-animation> 
+                    <a-animation attribute="position"
+                                 from="0 10 -1"
+                                 to="0 -100 -1"
+                                 dur="1"
+                                 easing="linear"
+                                 begin="22000">
+                    </a-animation> 
+                </a-entity>
+
+
+            </a-entity>
+
+
+
+            <!-- Sea -->
+            <a-plane id="sea"
+                     material="color: #FFFFFF;
+                               src: #floor;
+                               repeat: 100 100;
+                               normal-map: #floor-NRM;
+                               normal-texture-repeat: 100 100";
+                     rotation="-90 -135 0"
+                     position="0 2.62 0"
+                     scale="5000 5000 1">
+            </a-plane>
+
+
+
+        </a-scene>
+
+    </body>
+</html>
