@@ -3,6 +3,7 @@
     <head>
         <title>Sailing Sequence</title>
         <script src="https://aframe.io/releases/0.7.0/aframe.min.js"></script>
+        <script src="https://rawgit.com/takahirox/aframe-rain/master/build/aframe-rain.min.js"></script>
         <script>
             AFRAME.registerComponent('retry', {
                 init: function () {
@@ -173,7 +174,7 @@
 
 
             <!-- User + Ship -->
-            <a-entity id="user_ship" position="0 0 0">
+            <a-entity id="user_ship" position="0 0 0" rain="opacity: 0.7; count: 10000; color: #fefefa;">
 
                 <!-- User -->
                 <a-entity id="user"
