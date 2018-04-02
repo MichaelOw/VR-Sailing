@@ -174,13 +174,13 @@
 
 
             <!-- User + Ship -->
-            <a-entity id="user_ship" position="0 0 0" rain="opacity: 0.7; count: 10000; color: #fefefa;">
+            <a-entity id="user_ship" wasd-controls="enabled: true; acceleration: 5000" position="0 0 0" rain="opacity: 0.7; count: 10000; color: #fefefa;" steer-ship>
 
                 <!-- User -->
                 <a-entity id="user"
                           position="0 8 0"
                           rotation="0 0 0">
-                    <a-camera id="camera">
+                    <a-camera id="camera" keyboard-controls="enabled: false" wasd-controls="enabled: false">
                         <a-entity cursor="fuse: true; fuseTimeout: 1500"
                                   position="0 0 -1"
                                   geometry="primitive: sphere; radius: 0.01"
@@ -254,26 +254,6 @@
                                  begin="activate">
                     </a-animation> 
                 </a-sphere>   
-
-                <a-entity text="value: Look around and try to find America.\n(Somewhere on your left!)\n<----; color: #000000; width: 2; align: center"
-                          position="0 -100 -1"
-                          scale="1 1 1">
-                    <a-animation attribute="position"
-                                 from="0 -100 -1"
-                                 to="0 10 -1"
-                                 dur="1"
-                                 easing="linear"
-                                 begin="17000">
-                    </a-animation> 
-                    <a-animation attribute="position"
-                                 from="0 10 -1"
-                                 to="0 -100 -1"
-                                 dur="1"
-                                 easing="linear"
-                                 begin="22000">
-                    </a-animation> 
-                </a-entity>
-
 
             </a-entity>
 
