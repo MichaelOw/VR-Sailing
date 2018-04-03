@@ -9,6 +9,9 @@
         <script src="https://unpkg.com/aframe-aabb-collider-component/dist/aframe-aabb-collider-component.min.js"></script>
         <script>
             var first_time = 7   //Number of rocks plus 1
+            var steerLeft = false;
+            var steerRight = false;
+            
             AFRAME.registerComponent('collision_detect', {
                 init: function () {
                     this.el.addEventListener('hitstart', function (evt) {
@@ -23,6 +26,56 @@
                     });
                 }
             });
+            
+            AFRAME.registerComponent('position-interval', {
+              tick: function (t) {
+                var entity = this.el;
+
+                // Run on an interval.
+                if (t - this.time < 10) { return; } 
+                this.time = t;
+
+                // Calculate a position.
+                var position = new THREE.Vector3().copy(entity.object3D.getWorldPosition());
+                // Update position.
+                position.z -= 0.7;
+                if (steerLeft) {
+                  position.x -= 0.7;  
+                } else if (steerRight) {
+                  position.x += 0.7;  
+                }
+                  
+                entity.setAttribute('position', position);
+              }
+            });
+            
+            AFRAME.registerComponent('turn-left', {                
+                init: function () {
+                    var entity = this.el;
+                    var ship = document.getElementById('user-ship');
+                    entity.addEventListener('mouseenter', function (evt) {
+                        steerLeft = true;
+                    });
+                    
+                    entity.addEventListener('mouseleave', function (evt) {
+                       steerLeft = false; 
+                    });
+                }
+            });
+            
+            AFRAME.registerComponent('turn-right', {
+                init: function () {
+                    var entity = this.el;
+                    entity.addEventListener('mouseenter', function (evt) {
+                        steerRight = true;
+                    });
+                    
+                    entity.addEventListener('mouseleave', function (evt) {
+                       steerRight = false; 
+                    });
+                }
+            });
+            
         </script>
     </head>
 
@@ -108,7 +161,7 @@
             </a-sky>
 
             <!-- User + Ship -->
-            <a-entity id="user_ship" wasd-controls="enabled: true; acceleration: 5000" position="0 0 0" rain="opacity: 0.7; count: 10000; color: #fefefa;" steer-ship>
+            <a-entity id="user_ship" wasd-controls="enabled: true; acceleration: 5000" position="0 0 0" rain="opacity: 0.7; count: 10000; color: #fefefa;" position-interval>
 
                 <!-- User -->
                 <a-entity id="user" position="1 8 -10" rotation="0 0 0">
@@ -117,7 +170,7 @@
                                   position="0 0 -1"
                                   geometry="primitive: sphere; radius: 0.01"
                                   material="color: #ffffff; shader: flat; opacity: 0.5"
-                                  raycaster="objects: .clickable">
+                                  >
                             <a-animation attribute="scale"
                                          to="3 3 3"
                                          dur="1500"
@@ -137,26 +190,6 @@
                           scale="30 30 30">
 
                 </a-entity>  
-
-                <!-- Ship Bobbing -->
-                <a-animation attribute="rotation"
-                             from="-2 0 0"
-                             to="2 0 0"
-                             direction="alternate"
-                             repeat="indefinite"
-                             dur="2000"
-                             easing="ease-in-out-sine">
-                </a-animation>
-
-                <!-- Ship Moving -->
-                <a-animation attribute="position"
-                             from="0 0 0"
-                             to="0 0 -1500"
-                             dur="30000"
-                             easing="linear">
-                </a-animation>
-
-
 
                 <!-- Ship Collision Box -->
                 <a-box id="collision box"
@@ -202,7 +235,10 @@ begin="activate">
                                  begin="activate">
                     </a-animation>
                 </a-entity>
-
+                
+                <!-- Steering Boxes -->                
+                <a-box position="-1` 10 -15" color="#00a9d4" turn-left></a-box>
+                <a-box position="2 10 -15" color="#00a9d4" turn-right></a-box>
 
             </a-entity>
 
