@@ -203,9 +203,11 @@
                 
                 <!-- Steering Boxes -->
                 <a-box position="1 10 -3" color="#00a9d4"
-                       event-set__leftturn="_event: mouseenter; _target: #user_ship; rotation: 0 45 0"></a-box>
+                       event-set__leftturn="_event: mouseenter; _target: #user_ship; rotation: 0 45 0"
+                       event-set__reset="_event: mouseleave; _target: #user_ship; rotation: 0 0 0"></a-box>
                 <a-box position="-1 10 -3" color="#00a9d4"
-                       event-set__rightturn="_event: mouseenter; _target: #user_ship; rotation: 0 -45 0"></a-box>
+                       event-set__rightturn="_event: mouseenter; _target: #user_ship; rotation: 0 -45 0"
+                       event-set__reset="_event: mouseleave; _target: #user_ship; rotation: 0 0 0"></a-box>
                 <!-- Ship -->
                 <a-entity obj-model="obj: #ship-o; mtl: #ship-m"
                           position="-2 11 10"
