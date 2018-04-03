@@ -2,8 +2,10 @@
 <html>
     <head>
         <title>Sailing Sequence</title>
-        <script src="https://aframe.io/releases/0.7.0/aframe.min.js"></script>
+        <script src="https://aframe.io/releases/0.7.1/aframe.min.js"></script>
         <script src="https://rawgit.com/takahirox/aframe-rain/master/build/aframe-rain.min.js"></script>
+        <script src="https://unpkg.com/aframe-event-set-component@^4.0.0/dist/aframe-event-set-component.min.js"></script>
+
         <script>
             AFRAME.registerComponent('retry', {
                 init: function () {
@@ -86,10 +88,10 @@
                         var sea = document.getElementById('sea');
                         sea.setAttribute('rotation', '-90 135 0' )
 
-
                     });
                 }
             });
+            
         </script>
     </head>
 
@@ -174,13 +176,15 @@
 
 
             <!-- User + Ship -->
-            <a-entity id="user_ship" wasd-controls="enabled: true; acceleration: 5000" position="0 0 0" rain="opacity: 0.7; count: 10000; color: #fefefa;" steer-ship>
+            <a-entity id="user_ship" wasd-controls="enabled: true; acceleration: 5000" position="0 0 0" rain="opacity: 0.7; count: 10000; color: #fefefa;">
 
                 <!-- User -->
                 <a-entity id="user"
                           position="0 8 0"
                           rotation="0 0 0">
                     <a-camera id="camera" keyboard-controls="enabled: false" wasd-controls="enabled: false">
+                        <a-entity cursor="fuse:true" position="0 0 -1" geometry="primitive:sphere;radius:0.03" material="opacity:0.5;shader:flat;color:#ffffff">
+                        </a-entity>
                         <a-entity cursor="fuse: true; fuseTimeout: 1500"
                                   position="0 0 -1"
                                   geometry="primitive: sphere; radius: 0.01"
@@ -196,14 +200,19 @@
                         </a-entity>
                     </a-camera>
                 </a-entity>
-
+                
+                <!-- Steering Boxes -->
+                <a-box position="1 10 -3" color="#00a9d4"
+                       event-set__leftturn="_event: mouseenter; _target: #user_ship; rotation: 0 45 0"></a-box>
+                <a-box position="-1 10 -3" color="#00a9d4"
+                       event-set__rightturn="_event: mouseenter; _target: #user_ship; rotation: 0 -45 0"></a-box>
                 <!-- Ship -->
                 <a-entity obj-model="obj: #ship-o; mtl: #ship-m"
                           position="-2 11 10"
                           rotation="0 140 0"
                           scale="30 30 30">
-                </a-entity>            
-
+                </a-entity>      
+                
                 <a-animation id="travel_start"
                              attribute="position"
                              from="0 0 0"
@@ -253,10 +262,9 @@
                                  easing="linear"
                                  begin="activate">
                     </a-animation> 
-                </a-sphere>   
+                </a-sphere>  
 
             </a-entity>
-
 
 
             <!-- Sea -->
