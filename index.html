@@ -8,12 +8,18 @@
         <script src="https://unpkg.com/aframe-event-set-component@4.0.1/dist/aframe-event-set-component.js"></script>
         <script src="https://unpkg.com/aframe-aabb-collider-component/dist/aframe-aabb-collider-component.min.js"></script>
         <script>
+            var first_time = 7   //Number of rocks plus 1
             AFRAME.registerComponent('collision_detect', {
                 init: function () {
                     this.el.addEventListener('hitstart', function (evt) {
-                        console.log('collision BOOM');
-                        var you_died = document.getElementById('you_died');
-                        you_died.emit('activate')
+                        // Hotfix for some initialization bug
+                        if(first_time){
+                            first_time = first_time - 1
+                        } else {
+                            console.log('collision occured');
+                            var you_died = document.getElementById('you_died');
+                            you_died.emit('activate')
+                        }
                     });
                 }
             });
@@ -38,41 +44,49 @@
                 <a-asset-item id="rock1-m" src="3d/rock1/PUSHILIN_stone.mtl"></a-asset-item>
 
             </a-assets>
+            <!-- Rocks-->
+            <a-entity position="-50 0 0">
+                <!-- Rock-->
+                <a-entity position="0 0 -150" obj-model="obj: #rock1-o; mtl: #rock1-m" scale="30 30 30">
+                    <!-- Rock Collision Box --> <a-box aabb-collider="objects: a-box; debug: true" opacity="0" collision_detect></a-box> 
+                </a-entity>
 
-            <a-entity obj-model="obj: #rock1-o; mtl: #rock1-m"
-                      position="0 0 -50"
-                      scale="30 30 30"
-                      rotation="0 0 0">
-                <a-box color="#000000"
-                       position="0 0 0"
-                       aabb-collider="objects: a-box"
-                       scale="1 1 1"
-                       opacity="0.1"
-                       collision_detect>
-                </a-box>
-            </a-entity>
+                <!-- Rock-->
+                <a-entity position="100 0 -250" obj-model="obj: #rock1-o; mtl: #rock1-m" scale="30 30 30">
+                    <!-- Rock Collision Box --> <a-box aabb-collider="objects: a-box; debug: true" opacity="0" collision_detect></a-box> 
+                </a-entity>
+
+                <!-- Rock-->
+                <a-entity position="-100 0 -250" obj-model="obj: #rock1-o; mtl: #rock1-m" scale="30 30 30">
+                    <!-- Rock Collision Box --> <a-box aabb-collider="objects: a-box; debug: true" opacity="0" collision_detect></a-box> 
+                </a-entity>
+
+                <!-- Rock-->
+                <a-entity position="0 0 -350" obj-model="obj: #rock1-o; mtl: #rock1-m" scale="30 30 30">
+                    <!-- Rock Collision Box --> <a-box aabb-collider="objects: a-box; debug: true" opacity="0" collision_detect></a-box> 
+                </a-entity>
+
+                <!-- Rock-->
+                <a-entity position="100 0 -450" obj-model="obj: #rock1-o; mtl: #rock1-m" scale="30 30 30">
+                    <!-- Rock Collision Box --> <a-box aabb-collider="objects: a-box; debug: true" opacity="0" collision_detect></a-box> 
+                </a-entity>
+
+                <!-- Rock-->
+                <a-entity position="-100 0 -450" obj-model="obj: #rock1-o; mtl: #rock1-m" scale="30 30 30">
+                    <!-- Rock Collision Box --> <a-box aabb-collider="objects: a-box; debug: true" opacity="0" collision_detect></a-box> 
+                </a-entity>
+
+                <!-- Rock-->
+                <a-entity position="50 0 -500" obj-model="obj: #rock1-o; mtl: #rock1-m" scale="30 30 30">
+                    <!-- Rock Collision Box --> <a-box aabb-collider="objects: a-box; debug: true" opacity="0" collision_detect></a-box> 
+                </a-entity>
+            </a-entity>    
 
             <!-- America -->
-            <a-entity id="america"
-                      position="1000 0 -1000"
-                      scale="1 1 1"
-                      rotation="0 90 0">
-
-                <!-- Island1 -->
-                <a-entity obj-model="obj: #island2-o; mtl: #island2-m" position="-50 0 0" scale="1 1 1" rotation="0 0 0"></a-entity>
-                <!-- Island2 -->
-                <a-entity obj-model="obj: #island2-o; mtl: #island2-m" position="0 0 0" scale="1 1 1" rotation="0 180 0"></a-entity>
-                <!-- Island3 -->
-                <a-entity obj-model="obj: #island2-o; mtl: #island2-m" position="70 0 0" scale="1 1 1" rotation="0 0 0"></a-entity>
-
-                <a-box id="america_box"
-                       class="clickable"
-                       color="#000000"
-                       scale="100 100 100"
-                       opacity="0"
-                       spotted>
-                </a-box>
-
+            <a-entity id="america" position="0 0 -1000" scale="1 1 1" rotation="0 0 0">
+                <a-entity obj-model="obj: #island2-o; mtl: #island2-m" position="-50 0 0" scale="1 1 1" rotation="0 0 0"></a-entity> <!-- Island1 -->
+                <a-entity obj-model="obj: #island2-o; mtl: #island2-m" position="0 0 0" scale="1 1 1" rotation="0 180 0"></a-entity> <!-- Island2 -->
+                <a-entity obj-model="obj: #island2-o; mtl: #island2-m" position="70 0 0" scale="1 1 1" rotation="0 0 0"></a-entity> <!-- Island3 -->
                 <a-entity id="welcome_message"
                           text="value: Welcome to America!;
                                 color: #000000; width: 200;
@@ -81,31 +95,10 @@
                 </a-entity>
             </a-entity>
 
-            <!-- Retry Box -->
-            <a-entity id="retry_set"
-                      position="0 10.1 -1001"
-                      scale=".1 .1 .1">
-
-                <a-entity text="value: Retry?;
-                                color: #666666;
-                                width: 10;
-                                align: center">
-                </a-entity>
-
-                <a-box id="retry"
-                       class="clickable"
-                       position="0 -1 0"
-                       color = "#666666"
-                       retry>
-                </a-box>
-
-            </a-entity>
-
             <!-- Sky -->
             <a-sky src="#clear-sunny-sky"
                    rotation="0 65 0">
             </a-sky>
-
 
             <!-- User + Ship -->
             <a-entity id="user_ship" wasd-controls="enabled: true; acceleration: 5000" position="0 0 0" rain="opacity: 0.7; count: 10000; color: #fefefa;" steer-ship>
@@ -130,20 +123,40 @@
                 </a-entity>
 
                 <!-- Ship -->
-                <a-entity obj-model="obj: #ship-o; mtl: #ship-m"
+                <a-entity id="ship"
+                          obj-model="obj: #ship-o; mtl: #ship-m"
                           position="0 11 0"
                           rotation="0 140 0"
                           scale="30 30 30">
 
-                </a-entity>            
+                </a-entity>  
 
-                <!-- Collision Box -->
-                <a-box color="#000000" 
+                <!-- Ship Bobbing -->
+                <a-animation attribute="rotation"
+                             from="-2 0 0"
+                             to="2 0 0"
+                             direction="alternate"
+                             repeat="indefinite"
+                             dur="2000"
+                             easing="ease-in-out-sine">
+                </a-animation>
+
+                <!-- Ship Moving -->
+                <a-animation attribute="position"
+                             from="0 0 0"
+                             to="0 0 -1500"
+                             dur="30000"
+                             easing="linear">
+                </a-animation>
+
+
+                <!-- Ship Collision Box -->
+                <a-box id="collision box"
+                       color="#000000" 
                        opacity="0" 
-                       aabb-collider="objects:a-box" 
+                       aabb-collider="objects:a-box; debug: true" 
                        position="0 3 -4" 
-                       scale="8 1 30" 
-                       collision_detect>
+                       scale="8 1 30">
                 </a-box>
 
                 <!-- Blackout
@@ -197,6 +210,25 @@ begin="activate">
                      scale="5000 5000 1">
             </a-plane>
 
+            <!-- Retry Box -->
+            <a-entity id="retry_set"
+                      position="0 10.1 -1001"
+                      scale=".1 .1 .1">
+
+                <a-entity text="value: Retry?;
+                                color: #666666;
+                                width: 10;
+                                align: center">
+                </a-entity>
+
+                <a-box id="retry"
+                       class="clickable"
+                       position="0 -1 0"
+                       color = "#666666"
+                       retry>
+                </a-box>
+
+            </a-entity>
 
 
         </a-scene>
