@@ -13,10 +13,11 @@
             var steerLeft = false;
             var steerRight = false;
 
-            var forwardSpeed = 0.7;
-            var forwadSpeedOriginal = forwardSpeed;
-            var steerSpeed = 0.2;
-            var steerSpeedOriginal = 0.2;
+            var forwardSpeedOriginal = 0.7;
+            var forwardSpeed = forwardSpeedOriginal;
+
+            var steerSpeedOriginal = 0.3;
+            var steerSpeed = steerSpeedOriginal;
 
             AFRAME.registerComponent('collision_detect', {
                 init: function () {
@@ -44,7 +45,7 @@
                             setTimeout(function() {
                                 shipship.setAttribute('position', '0 0 -20');                       
                                 you_died.setAttribute('position', '0 -100 0');
-                                forwardSpeed = forwadSpeedOriginal;
+                                forwardSpeed = forwardSpeedOriginal;
                                 steerSpeed = steerSpeedOriginal;
                                 blackout.setAttribute('position', "1 -100 -10");
                             }, 4000);
@@ -64,6 +65,12 @@
                             console.log('reached america!');
                             forwardSpeed = 0;
                             steerSpeed = 0;
+
+                            var blackout = document.getElementById('blackout');
+                            setTimeout(function() {
+                                blackout.setAttribute('position', "1 9.5 -10");
+                                blackout.emit('activate');
+                            }, 2000);
                         }
                     });
                 }
@@ -141,7 +148,7 @@
             </a-assets>
 
             <!-- you've Gone too far collision wall -->
-            <a-box position="0 0 -1500" scale="10000 100 1" aabb-collider="objects: a-box" opacity="0" collision_detect></a-box> 
+            <a-box position="0 0 -1150" scale="10000 100 1" aabb-collider="objects: a-box" opacity="0" collision_detect></a-box> 
 
             <!-- Rocks-->
             <a-entity position="-50 0 0">
@@ -291,12 +298,13 @@
                 <a-entity class="clickable" id="steering device" position="1 8 -12" scale="0.5 0.5 0.5">
                     <a-triangle position="-1 0 0" rotation="0 0 90" color="#c16f3f" turn-left></a-triangle>
                     <a-triangle position="1 0 0" rotation="0 0 -90" color="#c16f3f" turn-right></a-triangle>
+                    <!-- Delay in appearing -->
                     <a-animation attribute="position"
                                  from="1 8 -12"
                                  to="1 9.25 -12"
                                  dur="0"
                                  easing="linear"
-                                 begin="10000">
+                                 begin="13000">
                     </a-animation>
 
                 </a-entity>
