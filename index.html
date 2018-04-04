@@ -236,15 +236,7 @@
                         <a-entity cursor="fuse: true; fuseTimeout: 1500"
                                   position="0 0 -1"
                                   geometry="primitive: sphere; radius: 0.01"
-                                  material="color: #ffffff; shader: flat; opacity: 0.5"
-                                  raycaster="objects: .clickable">
-                            <a-animation attribute="scale"
-                                         to="3 3 3"
-                                         dur="1500"
-                                         begin="cursor-fusing"
-                                         fill="backwards"
-                                         easing="linear">
-                            </a-animation>
+                                  material="color: #ffffff; shader: flat; opacity: 0.5">
                         </a-entity>
                     </a-camera>
                 </a-entity>
@@ -296,8 +288,14 @@
 
                 <!-- Steering Boxes -->
                 <a-entity class="clickable" id="steering device" position="1 8 -12" scale="0.5 0.5 0.5">
-                    <a-triangle position="-1 0 0" rotation="0 0 90" color="#c16f3f" turn-left></a-triangle>
-                    <a-triangle position="1 0 0" rotation="0 0 -90" color="#c16f3f" turn-right></a-triangle>
+                    <a-triangle position="-1 0 0" rotation="0 0 90" color="#c16f3f" turn-left
+                                event-set__enter="_event: mouseenter; material.color: #f4a142"
+                                event-set__leave="_event: mouseleave; material.color: #c16f3f">
+                    </a-triangle>
+                    <a-triangle position="1 0 0" rotation="0 0 -90" color="#c16f3f" turn-right
+                                event-set__enter="_event: mouseenter; material.color: #f4a142"
+                                event-set__leave="_event: mouseleave; material.color: #c16f3f">
+                    </a-triangle>
                     <!-- Delay in appearing -->
                     <a-animation attribute="position"
                                  from="1 8 -12"
