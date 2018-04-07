@@ -19,6 +19,8 @@
             var steerSpeedOriginal = 0.3;
             var steerSpeed = steerSpeedOriginal;
 
+            var currentlySteering = false;
+
             AFRAME.registerComponent('collision_detect', {
                 init: function () {
                     this.el.addEventListener('hitstart', function (evt) {
@@ -101,15 +103,15 @@
             AFRAME.registerComponent('turn-left', {                
                 init: function () {
                     var entity = this.el;
-                    var ship = document.getElementById('ship');
+                    var steering_wheel = document.getElementById('steering_wheel');
 
                     entity.addEventListener('mouseenter', function (evt) {
-                        ship.emit("steer_left_begin");
+                        steering_wheel.emit("steer_left_begin");
                         steerLeft = true;
                     });
 
                     entity.addEventListener('mouseleave', function (evt) {
-                        ship.emit("steer_left_end");
+                        steering_wheel.emit("steer_left_end");
                         steerLeft = false; 
                     });
                 }
@@ -118,15 +120,15 @@
             AFRAME.registerComponent('turn-right', {
                 init: function () {
                     var entity = this.el;
-                    var ship = document.getElementById('ship');
-                    
+                    var steering_wheel = document.getElementById('steering_wheel');
+
                     entity.addEventListener('mouseenter', function (evt) {
-                        ship.emit("steer_right_begin");
+                        steering_wheel.emit("steer_right_begin");
                         steerRight = true;
                     });
 
                     entity.addEventListener('mouseleave', function (evt) {
-                        ship.emit("steer_right_end");
+                        steering_wheel.emit("steer_right_end");
                         steerRight = false; 
                     });
                 }
@@ -248,6 +250,62 @@
                     </a-camera>
                 </a-entity>
 
+                <!-- Steering Wheel -->
+                <a-entity id="steering_wheel"
+                          position="-0.02 9.4 -10.5">
+
+                    <a-circle scale="0.15 0.15 0.15"
+                              color="#c16f3f">
+                    </a-circle>
+                    <a-cylinder position="0 0 -0.016"
+                                scale="0.012 0.489 0.012"
+                                color="#c16f3f">
+                    </a-cylinder>
+                    <a-cylinder position="0 0 -0.016" 
+                                scale="0.012 0.489 0.012" 
+                                rotation="0 0 45"
+                                color="#c16f3f">
+                    </a-cylinder>
+                    <a-cylinder position="0 0 -0.016" 
+                                scale="0.012 0.489 0.012" 
+                                rotation="0 0 90"
+                                color="#c16f3f">
+                    </a-cylinder>
+                    <a-cylinder position="0 0 -0.016" 
+                                scale="0.012 0.489 0.012" 
+                                rotation="0 0 135"
+                                color="#c16f3f">
+                    </a-cylinder>
+
+                    <a-animation attribute="rotation"
+                                 from="0 0 0"
+                                 to="0 0 90"
+                                 dur="1000"
+                                 easing="ease-in-out-sine"
+                                 begin="steer_left_begin">
+                    </a-animation>
+                    <a-animation attribute="rotation"
+                                 from="0 0 90"
+                                 to="0 0 0"
+                                 dur="1000"
+                                 easing="ease-in-out-sine"
+                                 begin="steer_left_end">
+                    </a-animation>
+                    <a-animation attribute="rotation"
+                                 from="0 0 0"
+                                 to="0 0 -90"
+                                 dur="1000"
+                                 easing="ease-in-out-sine"
+                                 begin="steer_right_begin">
+                    </a-animation>
+                    <a-animation attribute="rotation"
+                                 from="0 0 -90"
+                                 to="0 0 0"
+                                 dur="1000"
+                                 easing="ease-in-out-sine"
+                                 begin="steer_right_end">
+                    </a-animation>
+                </a-entity> 
 
                 <!-- Ship -->
                 <a-entity id="ship"
@@ -257,35 +315,35 @@
                           scale="30 30 30">
                 </a-entity>  
 
-                <!-- Ship steering animations-->
-                <a-animation attribute="rotation"
-                             from="0 0 0"
-                             to="0 5 0"
-                             dur="2000"
-                             easing="ease-in-out-sine"
-                             begin="steer_left_begin">
-                </a-animation>
-                <a-animation attribute="rotation"
-                             from="0 5 0"
-                             to="0 0 0"
-                             dur="2000"
-                             easing="ease-in-out-sine"
-                             begin="steer_left_end">
-                </a-animation>
-                <a-animation attribute="rotation"
-                             from="0 0 0"
-                             to="0 -5 0"
-                             dur="2000"
-                             easing="ease-in-out-sine"
-                             begin="steer_right_begin">
-                </a-animation>
-                <a-animation attribute="rotation"
-                             from="0 -5 0"
-                             to="0 0 0"
-                             dur="2000"
-                             easing="ease-in-out-sine"
-                             begin="steer_right_end">
-                </a-animation>
+                <!-- Ship steering animations
+<a-animation attribute="rotation"
+from="0 0 0"
+to="0 2 0"
+dur="1000"
+easing="ease-in-out-sine"
+begin="steer_left_begin">
+</a-animation>
+<a-animation attribute="rotation"
+from="0 2 0"
+to="0 0 0"
+dur="1000"
+easing="ease-in-out-sine"
+begin="steer_left_end">
+</a-animation>
+<a-animation attribute="rotation"
+from="0 0 0"
+to="0 -2 0"
+dur="1000"
+easing="ease-in-out-sine"
+begin="steer_right_begin">
+</a-animation>
+<a-animation attribute="rotation"
+from="0 -2 0"
+to="0 0 0"
+dur="1000"
+easing="ease-in-out-sine"
+begin="steer_right_end">
+</a-animation>-->
 
                 <!-- Ship Collision Box -->
                 <a-box id="collision box"
@@ -296,7 +354,7 @@
                        scale="8 1 30">
                 </a-box>
 
-                <!-- Ship Bobbing 
+                <!-- Ship Bobbing -->
                 <a-animation attribute="rotation"
                              from="-2 0 0"
                              to="2 0 0"
@@ -304,7 +362,7 @@
                              repeat="indefinite"
                              dur="2000"
                              easing="ease-in-out-sine">
-                </a-animation>-->
+                </a-animation>
 
                 <!-- Die prompt -->
                 <a-entity id="you_died" 
@@ -312,30 +370,30 @@
                                 color:#f44242;
                                 value:You died!\nTry again.;
                                 width:10" 
-                          position="1 7 -14"
+                          position="0 7 -14"
                           opacity="0">
                     <a-animation attribute="position"
-                                 from="1 7 -14"
-                                 to="1 11 -14"
+                                 from="0 7 -14"
+                                 to="0 11 -14"
                                  dur="1000"
                                  easing="linear"
                                  begin="activate">
                     </a-animation>
                 </a-entity>
 
-                <!-- Steering Triangles -->
-                <a-entity class="clickable" id="steering device" position="0 8 -12" scale="0.5 0.5 0.5">
-                    <a-triangle position="-1 0 0" rotation="0 0 90" color="#c16f3f" turn-left
-                                event-set__enter="_event: mouseenter; material.color: #f4a142"
-                                event-set__leave="_event: mouseleave; material.color: #c16f3f">
-                    </a-triangle>
-                    <a-triangle position="1 0 0" rotation="0 0 -90" color="#c16f3f" turn-right
-                                event-set__enter="_event: mouseenter; material.color: #f4a142"
-                                event-set__leave="_event: mouseleave; material.color: #c16f3f">
-                    </a-triangle>
+                <!-- Steering Columns -->
+                <a-entity class="clickable" id="steering device" position="0 -100 -12" scale="0.5 0.5 0.5">
+                    <a-box opacity="0.01" scale="10 10 0.001" position="-5.5 0 0" rotation="0 0 0" color="#ffffff" turn-left
+                           event-set__enter="_event: mouseenter; material.opacity: 0.2"
+                           event-set__leave="_event: mouseleave; material.opacity: 0.01">
+                    </a-box>
+                    <a-box opacity="0.01" scale="10 10 0.001" position="5.5 0 0" rotation="0 0 0" color="#ffffff" turn-right
+                           event-set__enter="_event: mouseenter; material.opacity: 0.2"
+                           event-set__leave="_event: mouseleave; material.opacity: 0.01">
+                    </a-box>
                     <!-- Delay in appearing -->
                     <a-animation attribute="position"
-                                 from="0 8 -12"
+                                 from="0 -100 -12"
                                  to="0 9.25 -12"
                                  dur="0"
                                  easing="linear"
