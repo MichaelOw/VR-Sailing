@@ -101,12 +101,15 @@
             AFRAME.registerComponent('turn-left', {                
                 init: function () {
                     var entity = this.el;
-                    var ship = document.getElementById('user-ship');
+                    var ship = document.getElementById('ship');
+
                     entity.addEventListener('mouseenter', function (evt) {
+                        ship.emit("steer_left_begin");
                         steerLeft = true;
                     });
 
                     entity.addEventListener('mouseleave', function (evt) {
+                        ship.emit("steer_left_end");
                         steerLeft = false; 
                     });
                 }
@@ -115,11 +118,15 @@
             AFRAME.registerComponent('turn-right', {
                 init: function () {
                     var entity = this.el;
+                    var ship = document.getElementById('ship');
+                    
                     entity.addEventListener('mouseenter', function (evt) {
+                        ship.emit("steer_right_begin");
                         steerRight = true;
                     });
 
                     entity.addEventListener('mouseleave', function (evt) {
+                        ship.emit("steer_right_end");
                         steerRight = false; 
                     });
                 }
@@ -231,7 +238,7 @@
             <a-entity id="user_ship" wasd-controls="enabled: true; acceleration: 5000" position="0 0 500" rain="opacity: 0.7; count: 10000; color: #fefefa;" position-interval>
 
                 <!-- User -->
-                <a-entity id="user" position="1 8 -10" rotation="0 0 0">
+                <a-entity id="user" position="0 8 -10" rotation="0 0 0">
                     <a-camera id="camera" keyboard-controls="enabled: false" wasd-controls="enabled: false">
                         <a-entity cursor="fuse: true; fuseTimeout: 1500"
                                   position="0 0 -1"
@@ -241,14 +248,44 @@
                     </a-camera>
                 </a-entity>
 
+
                 <!-- Ship -->
                 <a-entity id="ship"
                           obj-model="obj: #ship-o; mtl: #ship-m"
                           position="0 11 0"
                           rotation="0 140 0"
                           scale="30 30 30">
-
                 </a-entity>  
+
+                <!-- Ship steering animations-->
+                <a-animation attribute="rotation"
+                             from="0 0 0"
+                             to="0 5 0"
+                             dur="2000"
+                             easing="ease-in-out-sine"
+                             begin="steer_left_begin">
+                </a-animation>
+                <a-animation attribute="rotation"
+                             from="0 5 0"
+                             to="0 0 0"
+                             dur="2000"
+                             easing="ease-in-out-sine"
+                             begin="steer_left_end">
+                </a-animation>
+                <a-animation attribute="rotation"
+                             from="0 0 0"
+                             to="0 -5 0"
+                             dur="2000"
+                             easing="ease-in-out-sine"
+                             begin="steer_right_begin">
+                </a-animation>
+                <a-animation attribute="rotation"
+                             from="0 -5 0"
+                             to="0 0 0"
+                             dur="2000"
+                             easing="ease-in-out-sine"
+                             begin="steer_right_end">
+                </a-animation>
 
                 <!-- Ship Collision Box -->
                 <a-box id="collision box"
@@ -259,7 +296,7 @@
                        scale="8 1 30">
                 </a-box>
 
-                <!-- Ship Bobbing -->
+                <!-- Ship Bobbing 
                 <a-animation attribute="rotation"
                              from="-2 0 0"
                              to="2 0 0"
@@ -267,7 +304,7 @@
                              repeat="indefinite"
                              dur="2000"
                              easing="ease-in-out-sine">
-                </a-animation>
+                </a-animation>-->
 
                 <!-- Die prompt -->
                 <a-entity id="you_died" 
@@ -286,8 +323,8 @@
                     </a-animation>
                 </a-entity>
 
-                <!-- Steering Boxes -->
-                <a-entity class="clickable" id="steering device" position="1 8 -12" scale="0.5 0.5 0.5">
+                <!-- Steering Triangles -->
+                <a-entity class="clickable" id="steering device" position="0 8 -12" scale="0.5 0.5 0.5">
                     <a-triangle position="-1 0 0" rotation="0 0 90" color="#c16f3f" turn-left
                                 event-set__enter="_event: mouseenter; material.color: #f4a142"
                                 event-set__leave="_event: mouseleave; material.color: #c16f3f">
@@ -298,33 +335,17 @@
                     </a-triangle>
                     <!-- Delay in appearing -->
                     <a-animation attribute="position"
-                                 from="1 8 -12"
-                                 to="1 9.25 -12"
+                                 from="0 8 -12"
+                                 to="0 9.25 -12"
                                  dur="0"
                                  easing="linear"
-                                 begin="13000">
+                                 begin="1300">
                     </a-animation>
 
                 </a-entity>
 
 
-                <!-- Blackout-->
-                <a-sphere id="blackout"
-                          color="#000000"
-                          position="0 -100 0"
-                          scale=".5 .5 .5"
-                          opacity="0"
-                          side="double">
-                    <a-animation attribute="opacity"
-                                 from="0"
-                                 to="1"
-                                 direction="alternate"
-                                 repeat="1"
-                                 dur="2000"
-                                 easing="linear"
-                                 begin="activate">
-                    </a-animation>
-                </a-sphere> 
+
 
             </a-entity>
 
