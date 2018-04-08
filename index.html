@@ -8,7 +8,7 @@
         <script src="https://unpkg.com/aframe-event-set-component@4.0.1/dist/aframe-event-set-component.js"></script>
         <script src="https://unpkg.com/aframe-aabb-collider-component/dist/aframe-aabb-collider-component.min.js"></script>
         <script>
-            var first_time_collision = 11;  //Number of rocks plus 2
+            var first_time_collision = 18;  //Number of rocks plus 2
             var first_time_reach_america = 0;
             var steerLeft = false;
             var steerRight = false;
@@ -159,49 +159,72 @@
             <!-- you've Gone too far collision wall -->
             <a-box position="0 0 -1150" scale="10000 100 1" aabb-collider="objects: a-box" opacity="0" collision_detect></a-box> 
 
-            <!-- Rocks-->
-            <a-entity position="-50 0 0">
-                <a-entity position="0 0 -150" obj-model="obj: #rock1-o; mtl: #rock1-m" scale="30 30 30">
-                    <!-- Rock Collision Box --> <a-box aabb-collider="objects: a-box" opacity="0" collision_detect></a-box> 
+            <!-- New rocks -->
+            <a-entity>
+                <a-entity position="-150 0 -650" obj-model="obj: #rock1-o; mtl: #rock1-m" scale="30 30 30">
+                    <!-- Rock Collision Box --> <a-box aabb-collider="objects: a-box" opacity="0" collision_detect></a-box>
                 </a-entity>
 
-                <a-entity position="100 0 -250" obj-model="obj: #rock1-o; mtl: #rock1-m" scale="30 30 30">
-                    <!-- Rock Collision Box --> <a-box aabb-collider="objects: a-box" opacity="0" collision_detect></a-box> 
+                <a-entity position="100 0 -600" obj-model="obj: #rock1-o; mtl: #rock1-m" scale="30 30 30">
+                    <!-- Rock Collision Box --> <a-box aabb-collider="objects: a-box" opacity="0" collision_detect></a-box>
                 </a-entity>
 
-                <a-entity position="-100 0 -250" obj-model="obj: #rock1-o; mtl: #rock1-m" scale="30 30 30">
-                    <!-- Rock Collision Box --> <a-box aabb-collider="objects: a-box" opacity="0" collision_detect></a-box> 
+                <a-entity position="50 0 -450" obj-model="obj: #rock1-o; mtl: #rock1-m" scale="30 30 30">
+                    <!-- Rock Collision Box --> <a-box aabb-collider="objects: a-box" opacity="0" collision_detect></a-box>
                 </a-entity>
 
-                <a-entity position="0 0 -350" obj-model="obj: #rock1-o; mtl: #rock1-m" scale="30 30 30">
-                    <!-- Rock Collision Box --> <a-box aabb-collider="objects: a-box" opacity="0" collision_detect></a-box> 
+                <a-entity position="-200 0 -500" obj-model="obj: #rock1-o; mtl: #rock1-m" scale="30 30 30">
+                    <!-- Rock Collision Box --> <a-box aabb-collider="objects: a-box" opacity="0" collision_detect></a-box>
                 </a-entity>
 
-                <a-entity position="100 0 -450" obj-model="obj: #rock1-o; mtl: #rock1-m" scale="30 30 30">
-                    <!-- Rock Collision Box --> <a-box aabb-collider="objects: a-box" opacity="0" collision_detect></a-box> 
+                <a-entity position="150 0 -300" obj-model="obj: #rock1-o; mtl: #rock1-m" scale="30 30 30">
+                    <!-- Rock Collision Box --> <a-box aabb-collider="objects: a-box" opacity="0" collision_detect></a-box>
                 </a-entity>
 
-                <a-entity position="-100 0 -450" obj-model="obj: #rock1-o; mtl: #rock1-m" scale="30 30 30">
-                    <!-- Rock Collision Box --> <a-box aabb-collider="objects: a-box" opacity="0" collision_detect></a-box> 
+                <a-entity position="-250 0 -450" obj-model="obj: #rock1-o; mtl: #rock1-m" scale="30 30 30">
+                    <!-- Rock Collision Box --> <a-box aabb-collider="objects: a-box" opacity="0" collision_detect></a-box>
                 </a-entity>
 
-                <a-entity position="50 0 -500" obj-model="obj: #rock1-o; mtl: #rock1-m" scale="30 30 30">
-                    <!-- Rock Collision Box --> <a-box aabb-collider="objects: a-box" opacity="0" collision_detect></a-box> 
+                <a-entity position="200 0 -400" obj-model="obj: #rock1-o; mtl: #rock1-m" scale="30 30 30">
+                    <!-- Rock Collision Box --> <a-box aabb-collider="objects: a-box" opacity="0" collision_detect></a-box>
                 </a-entity>
 
-                <a-entity position="0 0 -500" obj-model="obj: #rock1-o; mtl: #rock1-m" scale="30 30 30">
-                    <!-- Rock Collision Box --> <a-box aabb-collider="objects: a-box" opacity="0" collision_detect></a-box> 
+                <a-entity position="-325 0 -450" obj-model="obj: #rock1-o; mtl: #rock1-m" scale="30 30 30">
+                    <!-- Rock Collision Box --> <a-box aabb-collider="objects: a-box" opacity="0" collision_detect></a-box>
                 </a-entity>
 
-                <a-entity position="-50 0 -500" obj-model="obj: #rock1-o; mtl: #rock1-m" scale="30 30 30">
-                    <!-- Rock Collision Box --> <a-box aabb-collider="objects: a-box" opacity="0" collision_detect></a-box> 
+                <a-entity position="300 0 -550" obj-model="obj: #rock1-o; mtl: #rock1-m" scale="30 30 30">
+                    <!-- Rock Collision Box --> <a-box aabb-collider="objects: a-box" opacity="0" collision_detect></a-box>
                 </a-entity>
 
-                <a-entity position="-100 0 -500" obj-model="obj: #rock1-o; mtl: #rock1-m" scale="30 30 30">
-                    <!-- Rock Collision Box --> <a-box aabb-collider="objects: a-box" opacity="0" collision_detect></a-box> 
+                <a-entity position="-350 0 -450" obj-model="obj: #rock1-o; mtl: #rock1-m" scale="30 30 30">
+                    <!-- Rock Collision Box --> <a-box aabb-collider="objects: a-box" opacity="0" collision_detect></a-box>
                 </a-entity>
 
-            </a-entity>    
+                <a-entity position="-300 0 -550" obj-model="obj: #rock1-o; mtl: #rock1-m" scale="30 30 30">
+                    <!-- Rock Collision Box --> <a-box aabb-collider="objects: a-box" opacity="0" collision_detect></a-box>
+                </a-entity>
+
+                <a-entity position="-200 0 -400" obj-model="obj: #rock1-o; mtl: #rock1-m" scale="30 30 30">
+                    <!-- Rock Collision Box --> <a-box aabb-collider="objects: a-box" opacity="0" collision_detect></a-box>
+                </a-entity>
+
+                <a-entity position="-150 0 -600" obj-model="obj: #rock1-o; mtl: #rock1-m" scale="30 30 30">
+                    <!-- Rock Collision Box --> <a-box aabb-collider="objects: a-box" opacity="0" collision_detect></a-box>
+                </a-entity>
+
+                <a-entity position="-250 0 -450" obj-model="obj: #rock1-o; mtl: #rock1-m" scale="30 30 30">
+                    <!-- Rock Collision Box --> <a-box aabb-collider="objects: a-box" opacity="0" collision_detect></a-box>
+                </a-entity>
+
+                <a-entity position="225 0 -300" obj-model="obj: #rock1-o; mtl: #rock1-m" scale="30 30 30">
+                    <!-- Rock Collision Box --> <a-box aabb-collider="objects: a-box" opacity="0" collision_detect></a-box>
+                </a-entity>
+
+                <a-entity position="-150 0 -500" obj-model="obj: #rock1-o; mtl: #rock1-m" scale="30 30 30">
+                    <!-- Rock Collision Box --> <a-box aabb-collider="objects: a-box" opacity="0" collision_detect></a-box>
+                </a-entity>
+            </a-entity>
 
             <!-- America -->
             <a-entity id="america" position="0 0 -1000" scale="1 1 1" rotation="0 0 0">
