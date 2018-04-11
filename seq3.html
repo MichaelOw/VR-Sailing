@@ -235,12 +235,12 @@
                 <a-entity obj-model="obj: #island2-o; mtl: #island2-m" position="0 0 0" scale="1 1 1" rotation="0 180 0"></a-entity> <!-- Island2 -->
                 <a-entity obj-model="obj: #island2-o; mtl: #island2-m" position="70 0 0" scale="1 1 1" rotation="0 0 0"></a-entity> <!-- Island3 -->
 
-                <!-- Light column -->
-                <a-cylinder color="#b5dcff" scale="10 10000 10" opacity="0.5" material="shader: flat"></a-cylinder>
+                <!-- Light column 
+                <a-cylinder color="#b5dcff" scale="10 10000 10" opacity="0.5" material="shader: flat"></a-cylinder>-->
 
                 <!-- Welcome message -->
                 <a-entity id="welcome_message"
-                          text="value: Welcome to America!;
+                          text="value: Welcome to Columbia!;
                                 color: #1668ff; width: 250;
                                 align: center"
                           position="0 50 11">
@@ -306,28 +306,28 @@
                     <a-animation attribute="rotation"
                                  from="0 0 0"
                                  to="0 0 90"
-                                 dur="1000"
+                                 dur="3000"
                                  easing="ease-in-out-sine"
                                  begin="steer_left_begin">
                     </a-animation>
                     <a-animation attribute="rotation"
                                  from="0 0 90"
                                  to="0 0 0"
-                                 dur="1000"
+                                 dur="3000"
                                  easing="ease-in-out-sine"
                                  begin="steer_left_end">
                     </a-animation>
                     <a-animation attribute="rotation"
                                  from="0 0 0"
                                  to="0 0 -90"
-                                 dur="1000"
+                                 dur="3000"
                                  easing="ease-in-out-sine"
                                  begin="steer_right_begin">
                     </a-animation>
                     <a-animation attribute="rotation"
                                  from="0 0 -90"
                                  to="0 0 0"
-                                 dur="1000"
+                                 dur="3000"
                                  easing="ease-in-out-sine"
                                  begin="steer_right_end">
                     </a-animation>
