@@ -1,0 +1,507 @@
+<!doctype html>
+<html>
+    <head>
+        <title>Sailing Sequence</title>
+        <script src="https://aframe.io/releases/0.7.0/aframe.min.js"></script>
+        <script src="https://rawgit.com/takahirox/aframe-rain/master/build/aframe-rain.min.js"></script>
+        <script src="https://unpkg.com/aframe-environment-component@1.0.0/dist/aframe-environment-component.min.js"></script>
+        <script src="https://unpkg.com/aframe-event-set-component@4.0.1/dist/aframe-event-set-component.js"></script>
+        <script src="https://unpkg.com/aframe-aabb-collider-component/dist/aframe-aabb-collider-component.min.js"></script>
+        <script>
+            var first_time_collision = 18;  //Number of rocks plus 2
+            var first_time_reach_america = 0;
+            var steerLeft = false;
+            var steerRight = false;
+
+            var forwardSpeedOriginal = 0.7;
+            var forwardSpeed = forwardSpeedOriginal;
+
+            var steerSpeedOriginal = 0.3;
+            var steerSpeed = steerSpeedOriginal;
+
+            var currentlySteering = false;
+
+            AFRAME.registerComponent('collision_detect', {
+                init: function () {
+                    this.el.addEventListener('hitstart', function (evt) {
+                        // Hotfix for some initialization bug
+                        if(first_time_collision){
+                            first_time_collision = first_time_collision - 1;
+                        } else {
+                            console.log('collision occured');
+                            var you_died = document.getElementById('you_died');
+                            you_died.emit('activate');
+                            forwardSpeed = 0;
+                            steerSpeed = 0;
+
+                            ambient_light = document.getElementById('ambient_light');
+                            directional_light = document.getElementById('directional_light');
+                            ambient_light.emit('activate');
+
+                            var shipship = document.getElementById('user_ship');
+                            var blackout = document.getElementById('blackout');
+                            setTimeout(function() {
+                                blackout.setAttribute('position', "0 9.5 -10");
+                                blackout.emit('activate');
+                            }, 2000);
+                            setTimeout(function() {
+                                shipship.setAttribute('position', '0 0 -20');                       
+                                you_died.setAttribute('position', '0 -100 0');
+                                forwardSpeed = forwardSpeedOriginal;
+                                steerSpeed = steerSpeedOriginal;
+                                blackout.setAttribute('position', "1 -100 -10");
+                            }, 4000);
+
+                        }
+                    });
+                }
+            });
+
+            AFRAME.registerComponent('reach_america_detect', {
+                init: function () {
+                    this.el.addEventListener('hitstart', function (evt) {
+                        // Hotfix for some initialization bug
+                        if(first_time_reach_america){
+                            first_time_reach_america = first_time_reach_america - 1;
+                        } else {
+                            console.log('reached america!');
+                            forwardSpeed = 0;
+                            steerSpeed = 0;
+
+                            var blackout = document.getElementById('blackout');
+                            setTimeout(function() {
+                                blackout.setAttribute('position', "0 9.5 -10");
+                                blackout.emit('activate');
+                            }, 2000);
+                            setTimeout(function() {
+                                window.location.href = 'https://pool-cormorant.glitch.me/'
+                            }, 3000);
+                        }
+                    });
+                }
+            });
+
+            AFRAME.registerComponent('position-interval', {
+                tick: function (t) {
+                    var entity = this.el;
+
+                    // Run on an interval.
+                    if (t - this.time < 10) { return; } 
+                    this.time = t;
+
+                    // Calculate a position.
+                    var position = new THREE.Vector3().copy(entity.object3D.getWorldPosition());
+                    // Update position.
+                    position.z -= forwardSpeed;
+                    if (steerLeft) {
+                        position.x -= steerSpeed;  
+                    } else if (steerRight) {
+                        position.x += steerSpeed;  
+                    }
+
+                    entity.setAttribute('position', position);
+                }
+            });
+
+            AFRAME.registerComponent('turn-left', {                
+                init: function () {
+                    var entity = this.el;
+                    var steering_wheel = document.getElementById('steering_wheel');
+
+                    entity.addEventListener('mouseenter', function (evt) {
+                        steering_wheel.emit("steer_left_begin");
+                        steerLeft = true;
+                    });
+
+                    entity.addEventListener('mouseleave', function (evt) {
+                        steering_wheel.emit("steer_left_end");
+                        steerLeft = false; 
+                    });
+                }
+            });
+
+            AFRAME.registerComponent('turn-right', {
+                init: function () {
+                    var entity = this.el;
+                    var steering_wheel = document.getElementById('steering_wheel');
+
+                    entity.addEventListener('mouseenter', function (evt) {
+                        steering_wheel.emit("steer_right_begin");
+                        steerRight = true;
+                    });
+
+                    entity.addEventListener('mouseleave', function (evt) {
+                        steering_wheel.emit("steer_right_end");
+                        steerRight = false; 
+                    });
+                }
+            });
+
+        </script>
+    </head>
+
+    <body>
+        <a-scene>
+            <!-- Asset Management System -->
+            <a-assets>
+                <img id="floor" src="img/floor.png">
+                <img id="floor-NRM" src="img/floor-NRM.png">
+                <img id="clear-sunny-sky" src="img/clear-sunny-sky.jpg">
+
+                <a-asset-item id="ship-o" src="3d/ship/model.obj"></a-asset-item>
+                <a-asset-item id="ship-m" src="3d/ship/materials.mtl"></a-asset-item>
+                <a-asset-item id="island1-o" src="3d/island1/Tropical%20Islands.obj"></a-asset-item>
+                <a-asset-item id="island1-m" src="3d/island1/Tropical%20Islands.mtl"></a-asset-item>
+                <a-asset-item id="island2-o" src="3d/island2/Bay_1250.obj"></a-asset-item>
+                <a-asset-item id="island2-m" src="3d/island2/Bay_1250.mtl"></a-asset-item>
+                <a-asset-item id="rock1-o" src="3d/rock1/PUSHILIN_stone.obj"></a-asset-item>
+                <a-asset-item id="rock1-m" src="3d/rock1/PUSHILIN_stone.mtl"></a-asset-item>
+
+            </a-assets>
+
+            <!-- you've Gone too far collision wall -->
+            <a-box position="0 0 -1150" scale="10000 100 1" aabb-collider="objects: a-box" opacity="0" collision_detect></a-box> 
+
+            <!-- New rocks -->
+            <a-entity>
+                <a-entity position="-150 0 -650" obj-model="obj: #rock1-o; mtl: #rock1-m" scale="30 30 30">
+                    <!-- Rock Collision Box --> <a-box aabb-collider="objects: a-box" opacity="0" collision_detect></a-box>
+                </a-entity>
+
+                <a-entity position="100 0 -600" obj-model="obj: #rock1-o; mtl: #rock1-m" scale="30 30 30">
+                    <!-- Rock Collision Box --> <a-box aabb-collider="objects: a-box" opacity="0" collision_detect></a-box>
+                </a-entity>
+
+                <a-entity position="50 0 -450" obj-model="obj: #rock1-o; mtl: #rock1-m" scale="30 30 30">
+                    <!-- Rock Collision Box --> <a-box aabb-collider="objects: a-box" opacity="0" collision_detect></a-box>
+                </a-entity>
+
+                <a-entity position="-200 0 -500" obj-model="obj: #rock1-o; mtl: #rock1-m" scale="30 30 30">
+                    <!-- Rock Collision Box --> <a-box aabb-collider="objects: a-box" opacity="0" collision_detect></a-box>
+                </a-entity>
+
+                <a-entity position="150 0 -300" obj-model="obj: #rock1-o; mtl: #rock1-m" scale="30 30 30">
+                    <!-- Rock Collision Box --> <a-box aabb-collider="objects: a-box" opacity="0" collision_detect></a-box>
+                </a-entity>
+
+                <a-entity position="-250 0 -450" obj-model="obj: #rock1-o; mtl: #rock1-m" scale="30 30 30">
+                    <!-- Rock Collision Box --> <a-box aabb-collider="objects: a-box" opacity="0" collision_detect></a-box>
+                </a-entity>
+
+                <a-entity position="200 0 -400" obj-model="obj: #rock1-o; mtl: #rock1-m" scale="30 30 30">
+                    <!-- Rock Collision Box --> <a-box aabb-collider="objects: a-box" opacity="0" collision_detect></a-box>
+                </a-entity>
+
+                <a-entity position="-325 0 -450" obj-model="obj: #rock1-o; mtl: #rock1-m" scale="30 30 30">
+                    <!-- Rock Collision Box --> <a-box aabb-collider="objects: a-box" opacity="0" collision_detect></a-box>
+                </a-entity>
+
+                <a-entity position="300 0 -550" obj-model="obj: #rock1-o; mtl: #rock1-m" scale="30 30 30">
+                    <!-- Rock Collision Box --> <a-box aabb-collider="objects: a-box" opacity="0" collision_detect></a-box>
+                </a-entity>
+
+                <a-entity position="-350 0 -450" obj-model="obj: #rock1-o; mtl: #rock1-m" scale="30 30 30">
+                    <!-- Rock Collision Box --> <a-box aabb-collider="objects: a-box" opacity="0" collision_detect></a-box>
+                </a-entity>
+
+                <a-entity position="-300 0 -550" obj-model="obj: #rock1-o; mtl: #rock1-m" scale="30 30 30">
+                    <!-- Rock Collision Box --> <a-box aabb-collider="objects: a-box" opacity="0" collision_detect></a-box>
+                </a-entity>
+
+                <a-entity position="-200 0 -400" obj-model="obj: #rock1-o; mtl: #rock1-m" scale="30 30 30">
+                    <!-- Rock Collision Box --> <a-box aabb-collider="objects: a-box" opacity="0" collision_detect></a-box>
+                </a-entity>
+
+                <a-entity position="-150 0 -600" obj-model="obj: #rock1-o; mtl: #rock1-m" scale="30 30 30">
+                    <!-- Rock Collision Box --> <a-box aabb-collider="objects: a-box" opacity="0" collision_detect></a-box>
+                </a-entity>
+
+                <a-entity position="-250 0 -450" obj-model="obj: #rock1-o; mtl: #rock1-m" scale="30 30 30">
+                    <!-- Rock Collision Box --> <a-box aabb-collider="objects: a-box" opacity="0" collision_detect></a-box>
+                </a-entity>
+
+                <a-entity position="225 0 -300" obj-model="obj: #rock1-o; mtl: #rock1-m" scale="30 30 30">
+                    <!-- Rock Collision Box --> <a-box aabb-collider="objects: a-box" opacity="0" collision_detect></a-box>
+                </a-entity>
+
+                <a-entity position="-10 0 -500" obj-model="obj: #rock1-o; mtl: #rock1-m" scale="30 30 30">
+                    <!-- Rock Collision Box --> <a-box aabb-collider="objects: a-box" opacity="0" collision_detect></a-box>
+                </a-entity>
+            </a-entity>
+
+            <!-- America -->
+            <a-entity id="america" position="0 0 -1000" scale="1 1 1" rotation="0 0 0">
+                <a-entity obj-model="obj: #island2-o; mtl: #island2-m" position="-50 0 0" scale="1 1 1" rotation="0 0 0"></a-entity> <!-- Island1 -->
+                <a-entity obj-model="obj: #island2-o; mtl: #island2-m" position="0 0 0" scale="1 1 1" rotation="0 180 0"></a-entity> <!-- Island2 -->
+                <a-entity obj-model="obj: #island2-o; mtl: #island2-m" position="70 0 0" scale="1 1 1" rotation="0 0 0"></a-entity> <!-- Island3 -->
+
+                <!-- Light column -->
+                <a-cylinder color="#b5dcff" scale="10 10000 10" opacity="0.5" material="shader: flat"></a-cylinder>
+
+                <!-- Welcome message -->
+                <a-entity id="welcome_message"
+                          text="value: Welcome to America!;
+                                color: #1668ff; width: 250;
+                                align: center"
+                          position="0 50 11">
+                </a-entity>
+
+                <!-- America collision box -->
+                <a-box id="america_box"
+                       color="#000000"
+                       scale="200 100 200"
+                       opacity="0"
+                       reach_america_detect>
+                </a-box>
+
+            </a-entity>
+
+            <!-- Sky -->
+            <a-sky src="#clear-sunny-sky"
+                   rotation="0 65 0"
+                   material="shader: standard">
+            </a-sky>
+
+            <!-- User + Ship -->
+            <a-entity id="user_ship" wasd-controls="enabled: true; acceleration: 5000" position="0 0 500" rain="opacity: 0.7; count: 10000; color: #fefefa;" position-interval>
+
+                <!-- User -->
+                <a-entity id="user" position="0 8 -10" rotation="0 0 0">
+                    <a-camera id="camera" keyboard-controls="enabled: false" wasd-controls="enabled: false">
+                        <a-entity cursor="fuse: true; fuseTimeout: 1500"
+                                  position="0 0 -1"
+                                  geometry="primitive: sphere; radius: 0.01"
+                                  material="color: #ffffff; shader: flat; opacity: 0.5">
+                        </a-entity>
+                    </a-camera>
+                </a-entity>
+
+                <!-- Steering Wheel -->
+                <a-entity id="steering_wheel"
+                          position="-0.02 9.4 -10.5">
+
+                    <a-circle scale="0.15 0.15 0.15"
+                              color="#c16f3f">
+                    </a-circle>
+                    <a-cylinder position="0 0 -0.016"
+                                scale="0.012 0.489 0.012"
+                                color="#c16f3f">
+                    </a-cylinder>
+                    <a-cylinder position="0 0 -0.016" 
+                                scale="0.012 0.489 0.012" 
+                                rotation="0 0 45"
+                                color="#c16f3f">
+                    </a-cylinder>
+                    <a-cylinder position="0 0 -0.016" 
+                                scale="0.012 0.489 0.012" 
+                                rotation="0 0 90"
+                                color="#c16f3f">
+                    </a-cylinder>
+                    <a-cylinder position="0 0 -0.016" 
+                                scale="0.012 0.489 0.012" 
+                                rotation="0 0 135"
+                                color="#c16f3f">
+                    </a-cylinder>
+
+                    <a-animation attribute="rotation"
+                                 from="0 0 0"
+                                 to="0 0 90"
+                                 dur="1000"
+                                 easing="ease-in-out-sine"
+                                 begin="steer_left_begin">
+                    </a-animation>
+                    <a-animation attribute="rotation"
+                                 from="0 0 90"
+                                 to="0 0 0"
+                                 dur="1000"
+                                 easing="ease-in-out-sine"
+                                 begin="steer_left_end">
+                    </a-animation>
+                    <a-animation attribute="rotation"
+                                 from="0 0 0"
+                                 to="0 0 -90"
+                                 dur="1000"
+                                 easing="ease-in-out-sine"
+                                 begin="steer_right_begin">
+                    </a-animation>
+                    <a-animation attribute="rotation"
+                                 from="0 0 -90"
+                                 to="0 0 0"
+                                 dur="1000"
+                                 easing="ease-in-out-sine"
+                                 begin="steer_right_end">
+                    </a-animation>
+                </a-entity> 
+
+                <!-- Blackout-->
+                <a-sphere id="blackout"
+                          color="#000000"
+                          position="0 -100 0"
+                          scale=".5 .5 .5"
+                          opacity="0"
+                          side="double">
+                    <a-animation attribute="opacity"
+                                 from="0"
+                                 to="1"
+                                 direction="alternate"
+                                 repeat="1"
+                                 dur="2000"
+                                 easing="linear"
+                                 begin="activate">
+                    </a-animation>
+                </a-sphere> 
+
+                <!-- Ship -->
+                <a-entity id="ship"
+                          obj-model="obj: #ship-o; mtl: #ship-m"
+                          position="0 11 0"
+                          rotation="0 140 0"
+                          scale="30 30 30">
+                </a-entity>  
+
+                <!-- Ship steering animations
+<a-animation attribute="rotation"
+from="0 0 0"
+to="0 2 0"
+dur="1000"
+easing="ease-in-out-sine"
+begin="steer_left_begin">
+</a-animation>
+<a-animation attribute="rotation"
+from="0 2 0"
+to="0 0 0"
+dur="1000"
+easing="ease-in-out-sine"
+begin="steer_left_end">
+</a-animation>
+<a-animation attribute="rotation"
+from="0 0 0"
+to="0 -2 0"
+dur="1000"
+easing="ease-in-out-sine"
+begin="steer_right_begin">
+</a-animation>
+<a-animation attribute="rotation"
+from="0 -2 0"
+to="0 0 0"
+dur="1000"
+easing="ease-in-out-sine"
+begin="steer_right_end">
+</a-animation>-->
+
+                <!-- Ship Collision Box -->
+                <a-box id="collision box"
+                       color="#000000" 
+                       opacity="0" 
+                       aabb-collider="objects:a-box" 
+                       position="0 3 -4" 
+                       scale="8 1 30">
+                </a-box>
+
+                <!-- Ship Bobbing -->
+                <a-animation attribute="rotation"
+                             from="-2 0 0"
+                             to="2 0 0"
+                             direction="alternate"
+                             repeat="indefinite"
+                             dur="2000"
+                             easing="ease-in-out-sine">
+                </a-animation>
+
+                <!-- Die prompt -->
+                <a-entity id="you_died" 
+                          text="align:center;
+                                color:#f44242;
+                                value:You died!\nTry again.;
+                                width:10" 
+                          position="0 7 -14"
+                          opacity="0">
+                    <a-animation attribute="position"
+                                 from="0 7 -14"
+                                 to="0 11 -14"
+                                 dur="1000"
+                                 easing="linear"
+                                 begin="activate">
+                    </a-animation>
+                </a-entity>
+
+                <!-- Steering Columns -->
+                <a-entity class="clickable" id="steering device" position="0 -100 -12" scale="0.5 0.5 0.5">
+                    <a-box opacity="0.01" scale="10 10 0.001" position="-5.5 0 0" rotation="0 0 0" color="#ffffff" turn-left
+                           event-set__enter="_event: mouseenter; material.opacity: 0.2"
+                           event-set__leave="_event: mouseleave; material.opacity: 0.01">
+                    </a-box>
+                    <a-box opacity="0.01" scale="10 10 0.001" position="5.5 0 0" rotation="0 0 0" color="#ffffff" turn-right
+                           event-set__enter="_event: mouseenter; material.opacity: 0.2"
+                           event-set__leave="_event: mouseleave; material.opacity: 0.01">
+                    </a-box>
+                    <!-- Delay in appearing -->
+                    <a-animation attribute="position"
+                                 from="0 -100 -12"
+                                 to="0 9.25 -12"
+                                 dur="0"
+                                 easing="linear"
+                                 begin="1300">
+                    </a-animation>
+
+                </a-entity>
+
+
+
+
+            </a-entity>
+
+            <!-- Sea -->
+            <a-plane id="sea"
+                     material="color: #FFFFFF;
+                               src: #floor;
+                               repeat: 100 100;
+                               normal-map: #floor-NRM;
+                               normal-texture-repeat: 100 100";
+                     rotation="-90 -135 0"
+                     position="0 2.62 0"
+                     scale="5000 5000 1">
+            </a-plane>
+
+            <!-- Default Lighting In The A-Frame Scene -->
+            <!-- 1 Ambient Light -->
+            <a-entity id="ambient_light"
+                      light="type: ambient;
+                             color: #BBB;
+                             intensity: 0.3">
+            </a-entity> 
+
+            <!-- 1 Directional Light -->
+            <a-entity id="directional_light"
+                      light="type: directional;
+                             color: #FFFFFF;
+                             intensity: 0.6;
+                             castShadow: true"
+                      position="-0.5 1 1">
+            </a-entity> 
+
+            <!-- Retry Box -->
+            <a-entity id="retry_set"
+                      position="0 10.1 -1001"
+                      scale=".1 .1 .1">
+
+                <a-entity text="value: Retry?;
+                                color: #666666;
+                                width: 10;
+                                align: center">
+                </a-entity>
+
+                <a-box id="retry"
+                       class="clickable"
+                       position="0 -1 0"
+                       color = "#666666"
+                       retry>
+                </a-box>
+
+            </a-entity>
+
+
+        </a-scene>
+
+    </body>
+</html>
