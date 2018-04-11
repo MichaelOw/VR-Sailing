@@ -1,0 +1,399 @@
+<html>
+    <head>
+        <script src="https://aframe.io/releases/0.8.0/aframe.min.js"></script>
+        <script src="https://unpkg.com/aframe-animation-component@4.0.0/dist/aframe-animation-component.min.js"></script> 
+        <script src="https://unpkg.com/aframe-event-set-component@^4.0.0/dist/aframe-event-set-component.min.js"></script> 
+        <script src="//cdn.rawgit.com/donmccurdy/aframe-extras/v4.0.0/dist/aframe-extras.min.js"></script>
+        <script src="//cdn.rawgit.com/donmccurdy/aframe-physics-system/v3.0.2/dist/aframe-physics-system.min.js"></script>
+        <script src="https://unpkg.com/super-hands@2.1.0/dist/super-hands.min.js"></script>
+        <script src="https://unpkg.com/aframe-text-geometry-component@^0.5.0/dist/aframe-text-geometry-component.min.js"></script>
+
+    </head>
+    <script>
+
+
+        //GOOD ITEMS
+        //pumpkin, sweet potato, tomato, potato, pineapple, turkey
+        //init
+
+        var Shipped_items = 0;
+        var CORRECT_ITEMS_NUM = 5;
+        var CORRECT_ITEMS = ["potato", "pumpkin", "tomato","sweet-potato", "pineapple", "turkey"];
+
+        var IS_CAN_SAIL = false;
+        var IS_DEBUG_MODE = false;
+        var scene;                                   
+        // Wait for DOM to finish loading before detecting collisions.
+        window.onload = function(){
+            scene = document.querySelector('a-scene');
+            if (IS_DEBUG_MODE){
+                var targetCollider = document.querySelector('a-scene');
+                targetCollider.addEventListener('collide', function (e) {
+                    console.log('[COLLISION] '+e.detail.target.el.id + ' has collided with ' + e.detail.body.el.id);
+
+                    targeter = e.detail.target.el.id;  // Original entity, but since if are using the entire scene,
+                    collider = e.detail.body.el.id;    // All will be logged.
+                });
+            }
+        }
+
+
+        //TODO: Quick workaround. Need reset button.
+        function resetScene(){
+            console.log("Resetting!");
+            location.reload();
+        }
+
+        function setSail(){
+            console.log("Setting sail!");
+            var blackout = document.getElementById('blackout');
+            setTimeout(function() {
+                blackout.setAttribute('position', "0 5 1.7")
+                blackout.emit('activate');
+            }, 0000);
+            setTimeout(function() {
+                window.location.href = 'seq3.html'
+            }, 2000);
+            
+            // idk bro turn ship around and move or something.
+        }
+
+        //TODO: FIX this after clarified specs
+        function checkCorrectness(){
+            console.log("Checking Correctness...");
+            console.log("Correct items: " + Shipped_items);
+            if (Shipped_items == CORRECT_ITEMS_NUM){
+                console.log("success");
+                setSail();
+            }
+        }
+
+        function is_correct_item(tryItem){
+            var result = CORRECT_ITEMS.includes(tryItem);
+            if (result){
+                console.log("Adding " + tryItem);
+                var index = CORRECT_ITEMS.indexOf(tryItem);
+                if (index > -1) {
+                    console.log("Index to remove: " + index);
+                    CORRECT_ITEMS.splice(index, 1);
+                    console.log(CORRECT_ITEMS);
+                    Shipped_items++;
+                }
+            }
+            return result;
+        }
+
+        // For items:
+        AFRAME.registerComponent('shipper', {
+            init: function () {
+                var targetCollider = this.el;
+                console.log("[DEBUG]" +targetCollider.id);
+                targetCollider.addEventListener('collide', function (e) {
+                    console.log('[SHIPPING COLLISION] '+e.detail.target.el.id + ' has collided with ' + e.detail.body.el.id);
+                    if (is_correct_item(e.detail.body.el.id)) {                  
+                        checkCorrectness();
+                        // lame hack LOLOLOL
+                        // Grabbable + dynamic-body doesn't allow manual updating of position
+                        // difficult to detect unless Physics debug is set to true.
+                        var item = e.detail.body.el;
+                        e.detail.body.el.setAttribute('scale', "0 0 0");
+                        //e.detail.target.el.setAttribute('opacity', "0.5");
+                    } else {
+                        console.log("wrong item!");
+                    }
+                });
+            }
+        });
+
+        //For inventory update:
+        /*
+    AFRAME.registerComponent('counter', {
+        var counterText = scene.querySelector("#count");
+        init: function (){
+        }
+    });*/
+    </script>
+    <body>
+        <a-scene physics="debug: false" >
+            <!-- Asset Management System -->
+            <a-assets>
+                <!-- GOOD ITEMS -->
+                <!-- pumpkin, sweet potato, tomato, potato, pineapple, turkey -->
+                <a-asset-item crossorigin="anonymous" id="pumpkin-o" src="https://cdn.glitch.com/1a954383-85cd-4b1e-affa-eafbd6ee201c%2Fpumpkin.obj?1523099833652"></a-asset-item>
+                <a-asset-item crossorigin="anonymous" id="pumpkin-m" src="https://cdn.glitch.com/1a954383-85cd-4b1e-affa-eafbd6ee201c%2Fpumpkin.mtl?1523099835198"></a-asset-item>
+                <a-asset-item crossorigin="anonymous" id="sweetpotatomod" src="https://cdn.glitch.com/1a954383-85cd-4b1e-affa-eafbd6ee201c%2Fsweetpotato.gltf?1522086199190"></a-asset-item>
+                <a-asset-item crossorigin="anonymous" id="tomatomod" src="https://cdn.glitch.com/1a954383-85cd-4b1e-affa-eafbd6ee201c%2Ftomato.gltf?1522086199191"></a-asset-item>
+                <a-asset-item crossorigin="anonymous" id="potatomod" src="https://cdn.glitch.com/1a954383-85cd-4b1e-affa-eafbd6ee201c%2Fpotato.gltf?1522086196665"></a-asset-item>
+                <a-asset-item crossorigin="anonymous" id="pineapplemod" src="https://cdn.glitch.com/1a954383-85cd-4b1e-affa-eafbd6ee201c%2Fpineapple.gltf?1522086201190"></a-asset-item>
+                <a-asset-item crossorigin="anonymous" id="turkeymod" src="https://cdn.glitch.com/1a954383-85cd-4b1e-affa-eafbd6ee201c%2Fturkey.gltf?1522086314361"></a-asset-item>
+
+                <a-asset-item crossorigin="anonymous" id="islandmod" src="https://cdn.glitch.com/1a954383-85cd-4b1e-affa-eafbd6ee201c%2Fscene.gltf?1522753076116"></a-asset-item>
+                <a-asset-item crossorigin="anonymous" id="beaglemod" src="https://cdn.glitch.com/1a954383-85cd-4b1e-affa-eafbd6ee201c%2Fbeagle.gltf?1521996237348"></a-asset-item>
+                <a-asset-item crossorigin="anonymous" id="carrotmod" src="https://cdn.glitch.com/1a954383-85cd-4b1e-affa-eafbd6ee201c%2Fcarrot.gltf?1522086194583"></a-asset-item>
+                <a-asset-item crossorigin="anonymous" id="catmod" src="https://cdn.glitch.com/1a954383-85cd-4b1e-affa-eafbd6ee201c%2Fcat.gltf?1522086195509"></a-asset-item>
+
+                <img crossorigin="anonymous" id="floor" src="https://cdn.glitch.com/1a954383-85cd-4b1e-affa-eafbd6ee201c%2FTexturesCom_Grass0157_1_seamless_S.jpg?1522069273159">
+                <img crossorigin="anonymous" id="floor-NRM" src="https://cdn.glitch.com/1a954383-85cd-4b1e-affa-eafbd6ee201c%2Ffloor-1024-NRM.jpg?1522072115269">
+                <img crossorigin="anonymous" id="wall" src="https://cdn.glitch.com/1a954383-85cd-4b1e-affa-eafbd6ee201c%2FTexturesCom_BrickOldRounded0105_1_seamless_S.jpg?1522069262003">
+                <img crossorigin="anonymous" id="clear-sunny-sky" src="https://cdn.glitch.com/1a954383-85cd-4b1e-affa-eafbd6ee201c%2Fclear-sunny-sky.jpg?1522069566803">
+
+                <a-asset-item id="ship-o" src="https://cdn.glitch.com/1a954383-85cd-4b1e-affa-eafbd6ee201c%2Fship.obj?1523087599380"></a-asset-item>
+                <a-asset-item id="ship-m" src="https://cdn.glitch.com/1a954383-85cd-4b1e-affa-eafbd6ee201c%2Fshipmaterials.mtl?1523087597033"></a-asset-item>
+
+                <img src="https://img.gs/bbdkhfbzkk/2048x1024,stretch/http://i.imgur.com/WMNH2OF.jpg" id="chrome" crossorigin="anonymous">
+                <img id="pink" src="https://img.gs/bbdkhfbzkk/stretch/http://i.imgur.com/1hyyIUi.jpg" crossorigin="anonymous" />
+                <a-asset-item crossorigin="anonymous" id="dawningFont" src="https://cdn.glitch.com/c719c986-c0c5-48b8-967c-3cd8b8aa17f3%2FdawningOfANewDayRegular.typeface.json?1490305922844"></a-asset-item>
+                <a-asset-item crossorigin="anonymous" id="exoFont" src="https://cdn.glitch.com/c719c986-c0c5-48b8-967c-3cd8b8aa17f3%2Fexo2Black.typeface.json?1490305922150"></a-asset-item>
+                <a-asset-item crossorigin="anonymous" id="exoItalicFont" src="https://cdn.glitch.com/c719c986-c0c5-48b8-967c-3cd8b8aa17f3%2Fexo2BlackItalic.typeface.json?1490305922725"></a-asset-item>
+
+            </a-assets>
+
+            <a-entity 
+                      position="-19 11 -10" scale="0.6 1.2 1" 
+                      rotation = " 0 30 10"
+                      text-geometry="value: AMERICAS;
+                                     font: #exoFont; 
+                                     bevelEnabled: true; 
+                                     bevelSize: 0.1; 
+                                     bevelThickness: 0.3; 
+                                     curveSegments: 1; 
+                                     size: 2.5; 
+                                     height: 0.5;" 
+                      material="color:red; 
+                                metalness:1; 
+                                roughness: 0.05; 
+                                sphericalEnvMap: #chrome;"></a-entity>
+
+            <a-entity 
+                      position="-10 23 -30" scale="0.6 1.2 1"
+                      rotation = " 0 0 0"
+                      text-geometry="value: Click and drag items 
+                                     into the Shipping Zone;
+                                     font: #exoFont; 
+                                     bevelEnabled: true; 
+                                     bevelSize: 0.1; 
+                                     bevelThickness: 0.3; 
+                                     curveSegments: 1; 
+                                     size: 2.5; 
+                                     height: 0.5;" 
+                      material="color:White; 
+                                metalness:1; 
+                                roughness: 0.1; 
+                                sphericalEnvMap: #chrome;"></a-entity>
+
+            <a-entity 
+                      id = "count"
+                      position="-7.5 16 -30" scale="0.6 1.2 1"
+                      rotation = " 0 0 0"
+                      text-geometry="value: 6 Items to import!;
+                                     font: #exoItalicFont; 
+                                     bevelEnabled: true; 
+                                     bevelSize: 0.1; 
+                                     bevelThickness: 0.3; 
+                                     curveSegments: 1; 
+                                     size: 1.5; 
+                                     height: 0.5;" 
+                      material="color:green; 
+                                metalness:0.1; 
+                                roughness: 0.1; 
+                                sphericalEnvMap: #chrome;"
+                      animation__scale="property: scale; dir: alternate; dur: 800;
+                                        easing: easeInSine; loop: true; to: 0.72 1.44 1.2"></a-entity>
+
+
+            <a-entity 
+                      position="3 1.8 -10" scale="0.8 1.2 0.5 " 
+                      rotation = "-90 -90 0"
+                      text-geometry="value: > > >;
+                                     font: #exoItalicFont; 
+                                     bevelEnabled: true; 
+                                     bevelSize: 0.1; 
+                                     bevelThickness: 0.5; 
+                                     curveSegments: 1; 
+                                     size: 2.5; 
+                                     height: 0.5;" 
+                      material="color:green; 
+                                metalness:0; 
+                                roughness: 0.05; 
+                                sphericalEnvMap: #chrome;"
+                      opacity = "1.0"
+                      animation="property: position; dur: 6000; to: 3 1.8 10; loop: true"
+                      ></a-entity> 
+
+            <!-- Sky-->
+            <a-sky src="#clear-sunny-sky"
+                   rotation="0 64 0">
+            </a-sky>
+
+
+            <!-- Ground  -->
+            <a-entity 
+                      id = "island"
+                      gltf-model="#islandmod"
+                      position="2 0 -6.5"
+                      scale="5 5 5"
+                      >
+            </a-entity> 
+
+            <!-- plane -->
+            <a-plane
+                     id = "boundingplane1"
+                     position = "0 1.2 0"
+                     scale = "50 50 50"
+                     rotation = "90 0 0"
+                     static-body></a-plane>
+
+            <!-- SHIP -->
+            <a-entity
+                      id = "ship"
+                      obj-model="obj: #ship-o; mtl: #ship-m"
+                      position="0 5 10"
+                      rotation="0 140 0"
+                      scale="20 20 20"
+                      animation="property: position; easing: easeInOutQuad; dir: alternate; dur: 4000; to: 0 4.9 10; loop: true"
+                      >
+            </a-entity>
+
+            <!-- Blackout-->
+            <a-sphere id="blackout" color="#000000" position="0 -100 2.5" scale="0.5 0.5 0.5" opacity="0.1" side="double" material="shader:flat" geometry="">
+                <a-animation data-brackets-id="768" attribute="opacity" from="0" to="1" direction="alternate" repeat="1" dur="2000" easing="linear" begin="activate">
+                </a-animation>
+            </a-sphere>
+
+            <!-- Shipping zone -->
+            <a-box 
+                   id = "shippingzone"
+                   position = "4.5 3 0"
+                   scale = "3.5 15 20"
+                   visible = 'false'
+                   static-body
+                   shipper></a-box>
+
+            <!-- SEA -->
+            <a-entity id="ocean" ocean="density: 30; width: 55; depth: 50; speed: 4"
+                      material="color: #4e86ca; opacity: 0.9; metalness: 0; roughness: 0.5"
+                      rotation="-90 0 0"
+                      position="0 0 20"></a-entity>
+
+            <a-entity id="ocean2" ocean="density: 30; width: 55; depth: 50; speed: 4"
+                      material="color: #4f3d9e; opacity: 0.9; metalness: 0; roughness: 0.5"
+                      rotation="-90 0 0"
+                      position="0 0 40"></a-entity>
+
+            <!-- STOREROOM ITEMS -->
+
+            <!-- GOOD ITEMS -->
+            <!-- pumpkin, sweet potato, tomato, potato, pineapple, turkey(?) -->
+            <a-entity
+                      id = "pumpkin"
+                      obj-model="obj: #pumpkin-o; mtl: #pumpkin-m"
+                      position="-2 2.4 -8"
+                      rotation="0 -60 0"
+                      scale="1 1 1"
+                      grabbable
+                      dynamic-body
+                      >
+            </a-entity>
+
+            <a-entity
+                      id = "sweet-potato"
+                      gltf-model="#sweetpotatomod"
+                      position="-5 1.4 -4"
+                      rotation="0 -60 0"
+                      scale="0.1 0.1 0.1"
+                      grabbable
+                      dynamic-body
+                      >
+            </a-entity>
+
+            <a-entity
+                      id = "tomato"
+                      gltf-model="#tomatomod"
+                      position="-4 1.4 -5"
+                      rotation="0 -0 0"
+                      scale="0.01 0.01 0.01"
+                      grabbable
+                      dynamic-body>
+            </a-entity>
+
+            <a-entity
+                      id = "potato"
+                      gltf-model="#potatomod"
+                      position="-6 1.4 -5.3"
+                      rotation="0 0 0"
+                      scale="0.05 0.05 0.05"
+                      grabbable
+                      dynamic-body>
+            </a-entity>
+
+            <a-entity
+                      id = "pineapple"
+                      gltf-model="#pineapplemod"
+                      position="-7 1.4 -9"
+                      rotation="0 -60 0"
+                      scale="0.1 0.1 0.1"
+                      grabbable
+                      dynamic-body>
+            </a-entity>
+
+            <a-entity
+                      id = "turkey"
+                      gltf-model="#turkeymod"
+                      position="8 1.4 -2"
+                      rotation="0 -60 0"
+                      scale="0.15 0.15 0.15"
+                      grabbable
+                      dynamic-body>
+            </a-entity>
+
+            <!-- BAD ITEMS -->
+            <!-- beagle, cat, apple, carrot -->
+            <a-entity
+                      id = "beagle"
+                      template="src: #look"
+                      gltf-model="#beaglemod"
+                      position="12 2 -7"
+                      rotation="0 -80 0"
+                      scale="0.02 0.02 0.02"
+                      grabbable
+                      dynamic-body>
+            </a-entity>
+
+            <a-entity
+                      id = "cat"
+                      gltf-model="#catmod"
+                      position="1.8 2 -6"
+                      rotation="0 -30 0"
+                      scale="0.02 0.02 0.02"
+                      grabbable
+                      dynamic-body>
+            </a-entity>
+
+            <a-entity
+                      id = "apple"
+                      gltf-model="#applemod"
+                      position="6 3.4 -3"
+                      rotation="0 -60 0"
+                      scale="0.01 0.01 0.01"
+                      grabbable
+                      dynamic-body>
+            </a-entity>
+
+            <a-entity
+                      id = "carrot"
+                      gltf-model="#carrotmod"
+                      position="-6 1 -5"
+                      rotation="0 -60 0"
+                      scale="0.1 0.1 0.1"
+                      grabbable
+                      dynamic-body
+                      >
+            </a-entity>
+            <a-entity light="color: #FFFAD3; intensity: 2.5" position="-1 10 -14"></a-entity>
+            <a-entity light="color: #FFFAD3; intensity: 1.5" position="-1 10 14"></a-entity>
+
+            <a-entity progressive-controls position="0 5 2" fov="80" ></a-entity>
+
+        </a-scene>
+    </body>
+</html>
